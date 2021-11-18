@@ -1,0 +1,3775 @@
+Terminals unused in grammar
+
+   T_CHAR_CONSTANT
+   T_FLOAT_CONSTANT
+   T_TYPEDEF
+   T_EXTERN
+   T_STATIC
+   T_AUTO
+   T_REGISTER
+   T_VOID
+   T_CHAR
+   T_SHORT
+   T_LONG
+   T_FLOAT
+   T_DOUBLE
+   T_SIGNED
+   T_UNSIGNED
+   T_STRUCT
+   T_UNION
+   T_ENUM
+   T_CONST
+   T_VOLATILE
+   T_CASE
+   T_DEFAULT
+   T_SWITCH
+   T_DO
+   T_FOR
+   T_GOTO
+   T_CONTINUE
+   T_BREAK
+
+
+Grammar
+
+    0 $accept: ROOT $end
+
+    1 ROOT: TRANSLATION_UNIT
+
+    2 PRIMARY_EXPRESSION: T_IDENTIFIER
+    3                   | CONSTANT
+    4                   | T_STRING_LITERAL
+    5                   | T_LBRACKET EXPRESSION T_RBRACKET
+
+    6 POSTFIX_EXPRESSION: PRIMARY_EXPRESSION
+    7                   | POSTFIX_EXPRESSION T_LSQUARE EXPRESSION T_RSQUARE
+    8                   | POSTFIX_EXPRESSION T_LBRACKET T_RBRACKET
+    9                   | POSTFIX_EXPRESSION T_LBRACKET ARGUMENT_EXPRESSION_LIST T_RBRACKET
+   10                   | POSTFIX_EXPRESSION T_FULLSTOP T_IDENTIFIER
+   11                   | POSTFIX_EXPRESSION T_ARROW T_IDENTIFIER
+   12                   | POSTFIX_EXPRESSION T_INCREMENT
+   13                   | POSTFIX_EXPRESSION T_DECREMENT
+
+   14 ARGUMENT_EXPRESSION_LIST: ASSIGNMENT_EXPRESSION
+   15                         | ARGUMENT_EXPRESSION_LIST T_COMMA ASSIGNMENT_EXPRESSION
+
+   16 UNARY_EXPRESSION: POSTFIX_EXPRESSION
+   17                 | T_INCREMENT UNARY_EXPRESSION
+   18                 | T_DECREMENT UNARY_EXPRESSION
+   19                 | UNARY_OPERATOR CAST_EXPRESSION
+   20                 | T_SIZEOF UNARY_EXPRESSION
+   21                 | T_SIZEOF T_LBRACKET TYPE_NAME T_RBRACKET
+
+   22 UNARY_OPERATOR: T_AMPERSAND
+   23               | T_ASTERISK
+   24               | T_PLUS
+   25               | T_MINUS
+   26               | T_TILDE
+   27               | T_EXCLAMATION
+
+   28 CAST_EXPRESSION: UNARY_EXPRESSION
+   29                | T_LBRACKET TYPE_NAME T_RBRACKET CAST_EXPRESSION
+
+   30 MULTIPLICATIVE_EXPRESSION: CAST_EXPRESSION
+   31                          | MULTIPLICATIVE_EXPRESSION T_ASTERISK CAST_EXPRESSION
+   32                          | MULTIPLICATIVE_EXPRESSION T_FRONTSLASH CAST_EXPRESSION
+   33                          | MULTIPLICATIVE_EXPRESSION T_PERCENT CAST_EXPRESSION
+
+   34 ADDITIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION
+   35                    | ADDITIVE_EXPRESSION T_PLUS MULTIPLICATIVE_EXPRESSION
+   36                    | ADDITIVE_EXPRESSION T_MINUS MULTIPLICATIVE_EXPRESSION
+
+   37 SHIFT_EXPRESSION: ADDITIVE_EXPRESSION
+   38                 | SHIFT_EXPRESSION T_LSHIFT ADDITIVE_EXPRESSION
+   39                 | SHIFT_EXPRESSION T_RSHIFT ADDITIVE_EXPRESSION
+
+   40 RELATIONAL_EXPRESSION: SHIFT_EXPRESSION
+   41                      | RELATIONAL_EXPRESSION T_LESS SHIFT_EXPRESSION
+   42                      | RELATIONAL_EXPRESSION T_GREATER SHIFT_EXPRESSION
+   43                      | RELATIONAL_EXPRESSION T_LESS_EQUAL SHIFT_EXPRESSION
+   44                      | RELATIONAL_EXPRESSION T_GREATER_EQUAL SHIFT_EXPRESSION
+
+   45 EQUALITY_EXPRESSION: RELATIONAL_EXPRESSION
+   46                    | EQUALITY_EXPRESSION T_EQUAL_EQUAL RELATIONAL_EXPRESSION
+   47                    | EQUALITY_EXPRESSION T_NOT_EQUAL RELATIONAL_EXPRESSION
+
+   48 AND_EXPRESSION: EQUALITY_EXPRESSION
+   49               | AND_EXPRESSION T_AMPERSAND EQUALITY_EXPRESSION
+
+   50 EXCLUSIVE_OR_EXPRESSION: AND_EXPRESSION
+   51                        | EXCLUSIVE_OR_EXPRESSION T_XOR AND_EXPRESSION
+
+   52 INCLUSIVE_OR_EXPRESSION: EXCLUSIVE_OR_EXPRESSION
+   53                        | INCLUSIVE_OR_EXPRESSION T_OR EXCLUSIVE_OR_EXPRESSION
+
+   54 LOGICAL_AND_EXPRESSION: INCLUSIVE_OR_EXPRESSION
+   55                       | LOGICAL_AND_EXPRESSION T_LOGICAL_AND INCLUSIVE_OR_EXPRESSION
+
+   56 LOGICAL_OR_EXPRESSION: LOGICAL_AND_EXPRESSION
+   57                      | LOGICAL_OR_EXPRESSION T_LOGICAL_OR LOGICAL_AND_EXPRESSION
+
+   58 CONDITIONAL_EXPRESSION: LOGICAL_OR_EXPRESSION
+   59                       | LOGICAL_OR_EXPRESSION T_QUESTION EXPRESSION T_COLON CONDITIONAL_EXPRESSION
+
+   60 ASSIGNMENT_EXPRESSION: CONDITIONAL_EXPRESSION
+   61                      | UNARY_EXPRESSION T_EQUALS ASSIGNMENT_EXPRESSION
+   62                      | UNARY_EXPRESSION T_EQUALS_MUL ASSIGNMENT_EXPRESSION
+   63                      | UNARY_EXPRESSION T_EQUALS_DIV ASSIGNMENT_EXPRESSION
+   64                      | UNARY_EXPRESSION T_EQUALS_MOD ASSIGNMENT_EXPRESSION
+   65                      | UNARY_EXPRESSION T_EQUALS_ADD ASSIGNMENT_EXPRESSION
+   66                      | UNARY_EXPRESSION T_EQUALS_SUB ASSIGNMENT_EXPRESSION
+   67                      | UNARY_EXPRESSION T_EQUALS_LSHIFT ASSIGNMENT_EXPRESSION
+   68                      | UNARY_EXPRESSION T_EQUALS_RSHIFT ASSIGNMENT_EXPRESSION
+   69                      | UNARY_EXPRESSION T_EQUALS_AND ASSIGNMENT_EXPRESSION
+   70                      | UNARY_EXPRESSION T_EQUALS_XOR ASSIGNMENT_EXPRESSION
+   71                      | UNARY_EXPRESSION T_EQUALS_OR ASSIGNMENT_EXPRESSION
+
+   72 EXPRESSION: ASSIGNMENT_EXPRESSION
+   73           | EXPRESSION T_COMMA ASSIGNMENT_EXPRESSION
+
+   74 DECLARATION: DECLARATION_SPECIFIERS INIT_DECLARATOR_LIST T_SEMICOLON
+   75            | DECLARATION_SPECIFIERS T_SEMICOLON
+
+   76 DECLARATION_SPECIFIERS: TYPE_SPECIFIER
+   77                       | TYPE_SPECIFIER DECLARATION_SPECIFIERS
+
+   78 INIT_DECLARATOR_LIST: INIT_DECLARATOR
+   79                     | INIT_DECLARATOR_LIST T_COMMA INIT_DECLARATOR
+
+   80 INIT_DECLARATOR: DECLARATOR
+   81                | DECLARATOR T_EQUALS INITIALIZER
+
+   82 TYPE_SPECIFIER: T_INT
+
+   83 SPECIFIER_QUALIFIER_LIST: TYPE_SPECIFIER
+
+   84 DECLARATOR: DIRECT_DECLARATOR
+
+   85 DIRECT_DECLARATOR: T_IDENTIFIER
+   86                  | DIRECT_DECLARATOR T_LBRACKET PARAMETER_TYPE_LIST T_RBRACKET
+   87                  | DIRECT_DECLARATOR T_LBRACKET T_RBRACKET
+   88                  | DIRECT_DECLARATOR T_LBRACKET IDENTIFIER_LIST T_RBRACKET
+
+   89 PARAMETER_TYPE_LIST: PARAMETER_LIST
+   90                    | PARAMETER_LIST T_COMMA T_ELLIPSIS
+
+   91 PARAMETER_LIST: PARAMETER_DECLARATION
+   92               | PARAMETER_LIST T_COMMA PARAMETER_DECLARATION
+
+   93 PARAMETER_DECLARATION: DECLARATION_SPECIFIERS DECLARATOR
+
+   94 IDENTIFIER_LIST: T_IDENTIFIER
+   95                | IDENTIFIER_LIST T_COMMA T_IDENTIFIER
+
+   96 TYPE_NAME: SPECIFIER_QUALIFIER_LIST
+
+   97 INITIALIZER: ASSIGNMENT_EXPRESSION
+
+   98 STATEMENT: COMPOUND_STATEMENT
+   99          | EXPRESSION_STATEMENT
+  100          | SELECTION_STATEMENT
+  101          | ITERATION_STATEMENT
+  102          | JUMP_STATEMENT
+
+  103 COMPOUND_STATEMENT: T_LCURLY T_RCURLY
+  104                   | T_LCURLY DECLARATION_LIST T_RCURLY
+  105                   | T_LCURLY STATEMENT_LIST T_RCURLY
+  106                   | T_LCURLY DECLARATION_LIST STATEMENT_LIST T_RCURLY
+
+  107 DECLARATION_LIST: DECLARATION
+  108                 | DECLARATION_LIST DECLARATION
+
+  109 STATEMENT_LIST: STATEMENT
+  110               | STATEMENT_LIST STATEMENT
+
+  111 EXPRESSION_STATEMENT: T_SEMICOLON
+  112                     | EXPRESSION T_SEMICOLON
+
+  113 SELECTION_STATEMENT: T_IF T_LBRACKET EXPRESSION T_RBRACKET STATEMENT
+  114                    | T_IF T_LBRACKET EXPRESSION T_RBRACKET STATEMENT T_ELSE STATEMENT
+
+  115 ITERATION_STATEMENT: T_WHILE T_LBRACKET EXPRESSION T_RBRACKET STATEMENT
+
+  116 JUMP_STATEMENT: T_RETURN T_SEMICOLON
+  117               | T_RETURN EXPRESSION T_SEMICOLON
+
+  118 TRANSLATION_UNIT: EXTERNAL_DECLARATION
+  119                 | EXTERNAL_DECLARATION TRANSLATION_UNIT
+
+  120 EXTERNAL_DECLARATION: DECLARATION
+  121                     | FUNCTION_DEFINITION
+
+  122 FUNCTION_DEFINITION: DECLARATION_SPECIFIERS DECLARATOR COMPOUND_STATEMENT
+  123                    | DECLARATOR DECLARATION_LIST COMPOUND_STATEMENT
+  124                    | DECLARATOR COMPOUND_STATEMENT
+  125                    | DECLARATION_SPECIFIERS DECLARATOR DECLARATION_LIST COMPOUND_STATEMENT
+
+  126 CONSTANT: T_INT_CONSTANT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+T_INT_CONSTANT (258) 126
+T_CHAR_CONSTANT (259)
+T_FLOAT_CONSTANT (260)
+T_IDENTIFIER (261) 2 10 11 85 94 95
+T_STRING_LITERAL (262) 4
+T_SEMICOLON (263) 74 75 111 112 116 117
+T_LBRACKET (264) 5 8 9 21 29 86 87 88 113 114 115
+T_RBRACKET (265) 5 8 9 21 29 86 87 88 113 114 115
+T_LCURLY (266) 103 104 105 106
+T_RCURLY (267) 103 104 105 106
+T_COMMA (268) 15 73 79 90 92 95
+T_TILDE (269) 26
+T_EQUALS (270) 61 81
+T_LSQUARE (271) 7
+T_RSQUARE (272) 7
+T_FULLSTOP (273) 10
+T_ARROW (274) 11
+T_INCREMENT (275) 12 17
+T_DECREMENT (276) 13 18
+T_SIZEOF (277) 20 21
+T_AMPERSAND (278) 22 49
+T_ASTERISK (279) 23 31
+T_PLUS (280) 24 35
+T_MINUS (281) 25 36
+T_EXCLAMATION (282) 27
+T_FRONTSLASH (283) 32
+T_LSHIFT (284) 38
+T_RSHIFT (285) 39
+T_PERCENT (286) 33
+T_LESS (287) 41
+T_GREATER (288) 42
+T_LESS_EQUAL (289) 43
+T_GREATER_EQUAL (290) 44
+T_EQUAL_EQUAL (291) 46
+T_NOT_EQUAL (292) 47
+T_XOR (293) 51
+T_OR (294) 53
+T_LOGICAL_AND (295) 55
+T_LOGICAL_OR (296) 57
+T_QUESTION (297) 59
+T_COLON (298) 59
+T_EQUALS_MUL (299) 62
+T_EQUALS_DIV (300) 63
+T_EQUALS_MOD (301) 64
+T_EQUALS_ADD (302) 65
+T_EQUALS_SUB (303) 66
+T_EQUALS_LSHIFT (304) 67
+T_EQUALS_RSHIFT (305) 68
+T_EQUALS_AND (306) 69
+T_EQUALS_XOR (307) 70
+T_EQUALS_OR (308) 71
+T_TYPEDEF (309)
+T_EXTERN (310)
+T_STATIC (311)
+T_AUTO (312)
+T_REGISTER (313)
+T_VOID (314)
+T_CHAR (315)
+T_SHORT (316)
+T_INT (317) 82
+T_LONG (318)
+T_FLOAT (319)
+T_DOUBLE (320)
+T_SIGNED (321)
+T_UNSIGNED (322)
+T_STRUCT (323)
+T_UNION (324)
+T_ENUM (325)
+T_CONST (326)
+T_VOLATILE (327)
+T_ELLIPSIS (328) 90
+T_CASE (329)
+T_DEFAULT (330)
+T_IF (331) 113 114
+T_ELSE (332) 114
+T_SWITCH (333)
+T_WHILE (334) 115
+T_DO (335)
+T_FOR (336)
+T_GOTO (337)
+T_CONTINUE (338)
+T_BREAK (339)
+T_RETURN (340) 116 117
+"then" (341)
+
+
+Nonterminals, with rules where they appear
+
+$accept (87)
+    on left: 0
+ROOT (88)
+    on left: 1, on right: 0
+PRIMARY_EXPRESSION (89)
+    on left: 2 3 4 5, on right: 6
+POSTFIX_EXPRESSION (90)
+    on left: 6 7 8 9 10 11 12 13, on right: 7 8 9 10 11 12 13 16
+ARGUMENT_EXPRESSION_LIST (91)
+    on left: 14 15, on right: 9 15
+UNARY_EXPRESSION (92)
+    on left: 16 17 18 19 20 21, on right: 17 18 20 28 61 62 63 64 65
+    66 67 68 69 70 71
+UNARY_OPERATOR (93)
+    on left: 22 23 24 25 26 27, on right: 19
+CAST_EXPRESSION (94)
+    on left: 28 29, on right: 19 29 30 31 32 33
+MULTIPLICATIVE_EXPRESSION (95)
+    on left: 30 31 32 33, on right: 31 32 33 34 35 36
+ADDITIVE_EXPRESSION (96)
+    on left: 34 35 36, on right: 35 36 37 38 39
+SHIFT_EXPRESSION (97)
+    on left: 37 38 39, on right: 38 39 40 41 42 43 44
+RELATIONAL_EXPRESSION (98)
+    on left: 40 41 42 43 44, on right: 41 42 43 44 45 46 47
+EQUALITY_EXPRESSION (99)
+    on left: 45 46 47, on right: 46 47 48 49
+AND_EXPRESSION (100)
+    on left: 48 49, on right: 49 50 51
+EXCLUSIVE_OR_EXPRESSION (101)
+    on left: 50 51, on right: 51 52 53
+INCLUSIVE_OR_EXPRESSION (102)
+    on left: 52 53, on right: 53 54 55
+LOGICAL_AND_EXPRESSION (103)
+    on left: 54 55, on right: 55 56 57
+LOGICAL_OR_EXPRESSION (104)
+    on left: 56 57, on right: 57 58 59
+CONDITIONAL_EXPRESSION (105)
+    on left: 58 59, on right: 59 60
+ASSIGNMENT_EXPRESSION (106)
+    on left: 60 61 62 63 64 65 66 67 68 69 70 71, on right: 14 15 61
+    62 63 64 65 66 67 68 69 70 71 72 73 97
+EXPRESSION (107)
+    on left: 72 73, on right: 5 7 59 73 112 113 114 115 117
+DECLARATION (108)
+    on left: 74 75, on right: 107 108 120
+DECLARATION_SPECIFIERS (109)
+    on left: 76 77, on right: 74 75 77 93 122 125
+INIT_DECLARATOR_LIST (110)
+    on left: 78 79, on right: 74 79
+INIT_DECLARATOR (111)
+    on left: 80 81, on right: 78 79
+TYPE_SPECIFIER (112)
+    on left: 82, on right: 76 77 83
+SPECIFIER_QUALIFIER_LIST (113)
+    on left: 83, on right: 96
+DECLARATOR (114)
+    on left: 84, on right: 80 81 93 122 123 124 125
+DIRECT_DECLARATOR (115)
+    on left: 85 86 87 88, on right: 84 86 87 88
+PARAMETER_TYPE_LIST (116)
+    on left: 89 90, on right: 86
+PARAMETER_LIST (117)
+    on left: 91 92, on right: 89 90 92
+PARAMETER_DECLARATION (118)
+    on left: 93, on right: 91 92
+IDENTIFIER_LIST (119)
+    on left: 94 95, on right: 88 95
+TYPE_NAME (120)
+    on left: 96, on right: 21 29
+INITIALIZER (121)
+    on left: 97, on right: 81
+STATEMENT (122)
+    on left: 98 99 100 101 102, on right: 109 110 113 114 115
+COMPOUND_STATEMENT (123)
+    on left: 103 104 105 106, on right: 98 122 123 124 125
+DECLARATION_LIST (124)
+    on left: 107 108, on right: 104 106 108 123 125
+STATEMENT_LIST (125)
+    on left: 109 110, on right: 105 106 110
+EXPRESSION_STATEMENT (126)
+    on left: 111 112, on right: 99
+SELECTION_STATEMENT (127)
+    on left: 113 114, on right: 100
+ITERATION_STATEMENT (128)
+    on left: 115, on right: 101
+JUMP_STATEMENT (129)
+    on left: 116 117, on right: 102
+TRANSLATION_UNIT (130)
+    on left: 118 119, on right: 1 119
+EXTERNAL_DECLARATION (131)
+    on left: 120 121, on right: 118 119
+FUNCTION_DEFINITION (132)
+    on left: 122 123 124 125, on right: 121
+CONSTANT (133)
+    on left: 126, on right: 3
+
+
+State 0
+
+    0 $accept: . ROOT $end
+
+    T_IDENTIFIER  shift, and go to state 1
+    T_INT         shift, and go to state 2
+
+    ROOT                    go to state 3
+    DECLARATION             go to state 4
+    DECLARATION_SPECIFIERS  go to state 5
+    TYPE_SPECIFIER          go to state 6
+    DECLARATOR              go to state 7
+    DIRECT_DECLARATOR       go to state 8
+    TRANSLATION_UNIT        go to state 9
+    EXTERNAL_DECLARATION    go to state 10
+    FUNCTION_DEFINITION     go to state 11
+
+
+State 1
+
+   85 DIRECT_DECLARATOR: T_IDENTIFIER .
+
+    $default  reduce using rule 85 (DIRECT_DECLARATOR)
+
+
+State 2
+
+   82 TYPE_SPECIFIER: T_INT .
+
+    $default  reduce using rule 82 (TYPE_SPECIFIER)
+
+
+State 3
+
+    0 $accept: ROOT . $end
+
+    $end  shift, and go to state 12
+
+
+State 4
+
+  120 EXTERNAL_DECLARATION: DECLARATION .
+
+    $default  reduce using rule 120 (EXTERNAL_DECLARATION)
+
+
+State 5
+
+   74 DECLARATION: DECLARATION_SPECIFIERS . INIT_DECLARATOR_LIST T_SEMICOLON
+   75            | DECLARATION_SPECIFIERS . T_SEMICOLON
+  122 FUNCTION_DEFINITION: DECLARATION_SPECIFIERS . DECLARATOR COMPOUND_STATEMENT
+  125                    | DECLARATION_SPECIFIERS . DECLARATOR DECLARATION_LIST COMPOUND_STATEMENT
+
+    T_IDENTIFIER  shift, and go to state 1
+    T_SEMICOLON   shift, and go to state 13
+
+    INIT_DECLARATOR_LIST  go to state 14
+    INIT_DECLARATOR       go to state 15
+    DECLARATOR            go to state 16
+    DIRECT_DECLARATOR     go to state 8
+
+
+State 6
+
+   76 DECLARATION_SPECIFIERS: TYPE_SPECIFIER .
+   77                       | TYPE_SPECIFIER . DECLARATION_SPECIFIERS
+
+    T_INT  shift, and go to state 2
+
+    $default  reduce using rule 76 (DECLARATION_SPECIFIERS)
+
+    DECLARATION_SPECIFIERS  go to state 17
+    TYPE_SPECIFIER          go to state 6
+
+
+State 7
+
+  123 FUNCTION_DEFINITION: DECLARATOR . DECLARATION_LIST COMPOUND_STATEMENT
+  124                    | DECLARATOR . COMPOUND_STATEMENT
+
+    T_LCURLY  shift, and go to state 18
+    T_INT     shift, and go to state 2
+
+    DECLARATION             go to state 19
+    DECLARATION_SPECIFIERS  go to state 20
+    TYPE_SPECIFIER          go to state 6
+    COMPOUND_STATEMENT      go to state 21
+    DECLARATION_LIST        go to state 22
+
+
+State 8
+
+   84 DECLARATOR: DIRECT_DECLARATOR .
+   86 DIRECT_DECLARATOR: DIRECT_DECLARATOR . T_LBRACKET PARAMETER_TYPE_LIST T_RBRACKET
+   87                  | DIRECT_DECLARATOR . T_LBRACKET T_RBRACKET
+   88                  | DIRECT_DECLARATOR . T_LBRACKET IDENTIFIER_LIST T_RBRACKET
+
+    T_LBRACKET  shift, and go to state 23
+
+    $default  reduce using rule 84 (DECLARATOR)
+
+
+State 9
+
+    1 ROOT: TRANSLATION_UNIT .
+
+    $default  reduce using rule 1 (ROOT)
+
+
+State 10
+
+  118 TRANSLATION_UNIT: EXTERNAL_DECLARATION .
+  119                 | EXTERNAL_DECLARATION . TRANSLATION_UNIT
+
+    T_IDENTIFIER  shift, and go to state 1
+    T_INT         shift, and go to state 2
+
+    $default  reduce using rule 118 (TRANSLATION_UNIT)
+
+    DECLARATION             go to state 4
+    DECLARATION_SPECIFIERS  go to state 5
+    TYPE_SPECIFIER          go to state 6
+    DECLARATOR              go to state 7
+    DIRECT_DECLARATOR       go to state 8
+    TRANSLATION_UNIT        go to state 24
+    EXTERNAL_DECLARATION    go to state 10
+    FUNCTION_DEFINITION     go to state 11
+
+
+State 11
+
+  121 EXTERNAL_DECLARATION: FUNCTION_DEFINITION .
+
+    $default  reduce using rule 121 (EXTERNAL_DECLARATION)
+
+
+State 12
+
+    0 $accept: ROOT $end .
+
+    $default  accept
+
+
+State 13
+
+   75 DECLARATION: DECLARATION_SPECIFIERS T_SEMICOLON .
+
+    $default  reduce using rule 75 (DECLARATION)
+
+
+State 14
+
+   74 DECLARATION: DECLARATION_SPECIFIERS INIT_DECLARATOR_LIST . T_SEMICOLON
+   79 INIT_DECLARATOR_LIST: INIT_DECLARATOR_LIST . T_COMMA INIT_DECLARATOR
+
+    T_SEMICOLON  shift, and go to state 25
+    T_COMMA      shift, and go to state 26
+
+
+State 15
+
+   78 INIT_DECLARATOR_LIST: INIT_DECLARATOR .
+
+    $default  reduce using rule 78 (INIT_DECLARATOR_LIST)
+
+
+State 16
+
+   80 INIT_DECLARATOR: DECLARATOR .
+   81                | DECLARATOR . T_EQUALS INITIALIZER
+  122 FUNCTION_DEFINITION: DECLARATION_SPECIFIERS DECLARATOR . COMPOUND_STATEMENT
+  125                    | DECLARATION_SPECIFIERS DECLARATOR . DECLARATION_LIST COMPOUND_STATEMENT
+
+    T_LCURLY  shift, and go to state 18
+    T_EQUALS  shift, and go to state 27
+    T_INT     shift, and go to state 2
+
+    $default  reduce using rule 80 (INIT_DECLARATOR)
+
+    DECLARATION             go to state 19
+    DECLARATION_SPECIFIERS  go to state 20
+    TYPE_SPECIFIER          go to state 6
+    COMPOUND_STATEMENT      go to state 28
+    DECLARATION_LIST        go to state 29
+
+
+State 17
+
+   77 DECLARATION_SPECIFIERS: TYPE_SPECIFIER DECLARATION_SPECIFIERS .
+
+    $default  reduce using rule 77 (DECLARATION_SPECIFIERS)
+
+
+State 18
+
+  103 COMPOUND_STATEMENT: T_LCURLY . T_RCURLY
+  104                   | T_LCURLY . DECLARATION_LIST T_RCURLY
+  105                   | T_LCURLY . STATEMENT_LIST T_RCURLY
+  106                   | T_LCURLY . DECLARATION_LIST STATEMENT_LIST T_RCURLY
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_SEMICOLON       shift, and go to state 33
+    T_LBRACKET        shift, and go to state 34
+    T_LCURLY          shift, and go to state 18
+    T_RCURLY          shift, and go to state 35
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_INT             shift, and go to state 2
+    T_IF              shift, and go to state 45
+    T_WHILE           shift, and go to state 46
+    T_RETURN          shift, and go to state 47
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 65
+    DECLARATION                go to state 19
+    DECLARATION_SPECIFIERS     go to state 20
+    TYPE_SPECIFIER             go to state 6
+    STATEMENT                  go to state 66
+    COMPOUND_STATEMENT         go to state 67
+    DECLARATION_LIST           go to state 68
+    STATEMENT_LIST             go to state 69
+    EXPRESSION_STATEMENT       go to state 70
+    SELECTION_STATEMENT        go to state 71
+    ITERATION_STATEMENT        go to state 72
+    JUMP_STATEMENT             go to state 73
+    CONSTANT                   go to state 74
+
+
+State 19
+
+  107 DECLARATION_LIST: DECLARATION .
+
+    $default  reduce using rule 107 (DECLARATION_LIST)
+
+
+State 20
+
+   74 DECLARATION: DECLARATION_SPECIFIERS . INIT_DECLARATOR_LIST T_SEMICOLON
+   75            | DECLARATION_SPECIFIERS . T_SEMICOLON
+
+    T_IDENTIFIER  shift, and go to state 1
+    T_SEMICOLON   shift, and go to state 13
+
+    INIT_DECLARATOR_LIST  go to state 14
+    INIT_DECLARATOR       go to state 15
+    DECLARATOR            go to state 75
+    DIRECT_DECLARATOR     go to state 8
+
+
+State 21
+
+  124 FUNCTION_DEFINITION: DECLARATOR COMPOUND_STATEMENT .
+
+    $default  reduce using rule 124 (FUNCTION_DEFINITION)
+
+
+State 22
+
+  108 DECLARATION_LIST: DECLARATION_LIST . DECLARATION
+  123 FUNCTION_DEFINITION: DECLARATOR DECLARATION_LIST . COMPOUND_STATEMENT
+
+    T_LCURLY  shift, and go to state 18
+    T_INT     shift, and go to state 2
+
+    DECLARATION             go to state 76
+    DECLARATION_SPECIFIERS  go to state 20
+    TYPE_SPECIFIER          go to state 6
+    COMPOUND_STATEMENT      go to state 77
+
+
+State 23
+
+   86 DIRECT_DECLARATOR: DIRECT_DECLARATOR T_LBRACKET . PARAMETER_TYPE_LIST T_RBRACKET
+   87                  | DIRECT_DECLARATOR T_LBRACKET . T_RBRACKET
+   88                  | DIRECT_DECLARATOR T_LBRACKET . IDENTIFIER_LIST T_RBRACKET
+
+    T_IDENTIFIER  shift, and go to state 78
+    T_RBRACKET    shift, and go to state 79
+    T_INT         shift, and go to state 2
+
+    DECLARATION_SPECIFIERS  go to state 80
+    TYPE_SPECIFIER          go to state 6
+    PARAMETER_TYPE_LIST     go to state 81
+    PARAMETER_LIST          go to state 82
+    PARAMETER_DECLARATION   go to state 83
+    IDENTIFIER_LIST         go to state 84
+
+
+State 24
+
+  119 TRANSLATION_UNIT: EXTERNAL_DECLARATION TRANSLATION_UNIT .
+
+    $default  reduce using rule 119 (TRANSLATION_UNIT)
+
+
+State 25
+
+   74 DECLARATION: DECLARATION_SPECIFIERS INIT_DECLARATOR_LIST T_SEMICOLON .
+
+    $default  reduce using rule 74 (DECLARATION)
+
+
+State 26
+
+   79 INIT_DECLARATOR_LIST: INIT_DECLARATOR_LIST T_COMMA . INIT_DECLARATOR
+
+    T_IDENTIFIER  shift, and go to state 1
+
+    INIT_DECLARATOR    go to state 85
+    DECLARATOR         go to state 75
+    DIRECT_DECLARATOR  go to state 8
+
+
+State 27
+
+   81 INIT_DECLARATOR: DECLARATOR T_EQUALS . INITIALIZER
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 86
+    INITIALIZER                go to state 87
+    CONSTANT                   go to state 74
+
+
+State 28
+
+  122 FUNCTION_DEFINITION: DECLARATION_SPECIFIERS DECLARATOR COMPOUND_STATEMENT .
+
+    $default  reduce using rule 122 (FUNCTION_DEFINITION)
+
+
+State 29
+
+  108 DECLARATION_LIST: DECLARATION_LIST . DECLARATION
+  125 FUNCTION_DEFINITION: DECLARATION_SPECIFIERS DECLARATOR DECLARATION_LIST . COMPOUND_STATEMENT
+
+    T_LCURLY  shift, and go to state 18
+    T_INT     shift, and go to state 2
+
+    DECLARATION             go to state 76
+    DECLARATION_SPECIFIERS  go to state 20
+    TYPE_SPECIFIER          go to state 6
+    COMPOUND_STATEMENT      go to state 88
+
+
+State 30
+
+  126 CONSTANT: T_INT_CONSTANT .
+
+    $default  reduce using rule 126 (CONSTANT)
+
+
+State 31
+
+    2 PRIMARY_EXPRESSION: T_IDENTIFIER .
+
+    $default  reduce using rule 2 (PRIMARY_EXPRESSION)
+
+
+State 32
+
+    4 PRIMARY_EXPRESSION: T_STRING_LITERAL .
+
+    $default  reduce using rule 4 (PRIMARY_EXPRESSION)
+
+
+State 33
+
+  111 EXPRESSION_STATEMENT: T_SEMICOLON .
+
+    $default  reduce using rule 111 (EXPRESSION_STATEMENT)
+
+
+State 34
+
+    5 PRIMARY_EXPRESSION: T_LBRACKET . EXPRESSION T_RBRACKET
+   29 CAST_EXPRESSION: T_LBRACKET . TYPE_NAME T_RBRACKET CAST_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_INT             shift, and go to state 2
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 89
+    TYPE_SPECIFIER             go to state 90
+    SPECIFIER_QUALIFIER_LIST   go to state 91
+    TYPE_NAME                  go to state 92
+    CONSTANT                   go to state 74
+
+
+State 35
+
+  103 COMPOUND_STATEMENT: T_LCURLY T_RCURLY .
+
+    $default  reduce using rule 103 (COMPOUND_STATEMENT)
+
+
+State 36
+
+   26 UNARY_OPERATOR: T_TILDE .
+
+    $default  reduce using rule 26 (UNARY_OPERATOR)
+
+
+State 37
+
+   17 UNARY_EXPRESSION: T_INCREMENT . UNARY_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 93
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION  go to state 48
+    POSTFIX_EXPRESSION  go to state 49
+    UNARY_EXPRESSION    go to state 94
+    UNARY_OPERATOR      go to state 51
+    CONSTANT            go to state 74
+
+
+State 38
+
+   18 UNARY_EXPRESSION: T_DECREMENT . UNARY_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 93
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION  go to state 48
+    POSTFIX_EXPRESSION  go to state 49
+    UNARY_EXPRESSION    go to state 95
+    UNARY_OPERATOR      go to state 51
+    CONSTANT            go to state 74
+
+
+State 39
+
+   20 UNARY_EXPRESSION: T_SIZEOF . UNARY_EXPRESSION
+   21                 | T_SIZEOF . T_LBRACKET TYPE_NAME T_RBRACKET
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 96
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION  go to state 48
+    POSTFIX_EXPRESSION  go to state 49
+    UNARY_EXPRESSION    go to state 97
+    UNARY_OPERATOR      go to state 51
+    CONSTANT            go to state 74
+
+
+State 40
+
+   22 UNARY_OPERATOR: T_AMPERSAND .
+
+    $default  reduce using rule 22 (UNARY_OPERATOR)
+
+
+State 41
+
+   23 UNARY_OPERATOR: T_ASTERISK .
+
+    $default  reduce using rule 23 (UNARY_OPERATOR)
+
+
+State 42
+
+   24 UNARY_OPERATOR: T_PLUS .
+
+    $default  reduce using rule 24 (UNARY_OPERATOR)
+
+
+State 43
+
+   25 UNARY_OPERATOR: T_MINUS .
+
+    $default  reduce using rule 25 (UNARY_OPERATOR)
+
+
+State 44
+
+   27 UNARY_OPERATOR: T_EXCLAMATION .
+
+    $default  reduce using rule 27 (UNARY_OPERATOR)
+
+
+State 45
+
+  113 SELECTION_STATEMENT: T_IF . T_LBRACKET EXPRESSION T_RBRACKET STATEMENT
+  114                    | T_IF . T_LBRACKET EXPRESSION T_RBRACKET STATEMENT T_ELSE STATEMENT
+
+    T_LBRACKET  shift, and go to state 98
+
+
+State 46
+
+  115 ITERATION_STATEMENT: T_WHILE . T_LBRACKET EXPRESSION T_RBRACKET STATEMENT
+
+    T_LBRACKET  shift, and go to state 99
+
+
+State 47
+
+  116 JUMP_STATEMENT: T_RETURN . T_SEMICOLON
+  117               | T_RETURN . EXPRESSION T_SEMICOLON
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_SEMICOLON       shift, and go to state 100
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 101
+    CONSTANT                   go to state 74
+
+
+State 48
+
+    6 POSTFIX_EXPRESSION: PRIMARY_EXPRESSION .
+
+    $default  reduce using rule 6 (POSTFIX_EXPRESSION)
+
+
+State 49
+
+    7 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION . T_LSQUARE EXPRESSION T_RSQUARE
+    8                   | POSTFIX_EXPRESSION . T_LBRACKET T_RBRACKET
+    9                   | POSTFIX_EXPRESSION . T_LBRACKET ARGUMENT_EXPRESSION_LIST T_RBRACKET
+   10                   | POSTFIX_EXPRESSION . T_FULLSTOP T_IDENTIFIER
+   11                   | POSTFIX_EXPRESSION . T_ARROW T_IDENTIFIER
+   12                   | POSTFIX_EXPRESSION . T_INCREMENT
+   13                   | POSTFIX_EXPRESSION . T_DECREMENT
+   16 UNARY_EXPRESSION: POSTFIX_EXPRESSION .
+
+    T_LBRACKET   shift, and go to state 102
+    T_LSQUARE    shift, and go to state 103
+    T_FULLSTOP   shift, and go to state 104
+    T_ARROW      shift, and go to state 105
+    T_INCREMENT  shift, and go to state 106
+    T_DECREMENT  shift, and go to state 107
+
+    $default  reduce using rule 16 (UNARY_EXPRESSION)
+
+
+State 50
+
+   28 CAST_EXPRESSION: UNARY_EXPRESSION .
+   61 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION . T_EQUALS ASSIGNMENT_EXPRESSION
+   62                      | UNARY_EXPRESSION . T_EQUALS_MUL ASSIGNMENT_EXPRESSION
+   63                      | UNARY_EXPRESSION . T_EQUALS_DIV ASSIGNMENT_EXPRESSION
+   64                      | UNARY_EXPRESSION . T_EQUALS_MOD ASSIGNMENT_EXPRESSION
+   65                      | UNARY_EXPRESSION . T_EQUALS_ADD ASSIGNMENT_EXPRESSION
+   66                      | UNARY_EXPRESSION . T_EQUALS_SUB ASSIGNMENT_EXPRESSION
+   67                      | UNARY_EXPRESSION . T_EQUALS_LSHIFT ASSIGNMENT_EXPRESSION
+   68                      | UNARY_EXPRESSION . T_EQUALS_RSHIFT ASSIGNMENT_EXPRESSION
+   69                      | UNARY_EXPRESSION . T_EQUALS_AND ASSIGNMENT_EXPRESSION
+   70                      | UNARY_EXPRESSION . T_EQUALS_XOR ASSIGNMENT_EXPRESSION
+   71                      | UNARY_EXPRESSION . T_EQUALS_OR ASSIGNMENT_EXPRESSION
+
+    T_EQUALS         shift, and go to state 108
+    T_EQUALS_MUL     shift, and go to state 109
+    T_EQUALS_DIV     shift, and go to state 110
+    T_EQUALS_MOD     shift, and go to state 111
+    T_EQUALS_ADD     shift, and go to state 112
+    T_EQUALS_SUB     shift, and go to state 113
+    T_EQUALS_LSHIFT  shift, and go to state 114
+    T_EQUALS_RSHIFT  shift, and go to state 115
+    T_EQUALS_AND     shift, and go to state 116
+    T_EQUALS_XOR     shift, and go to state 117
+    T_EQUALS_OR      shift, and go to state 118
+
+    $default  reduce using rule 28 (CAST_EXPRESSION)
+
+
+State 51
+
+   19 UNARY_EXPRESSION: UNARY_OPERATOR . CAST_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION  go to state 48
+    POSTFIX_EXPRESSION  go to state 49
+    UNARY_EXPRESSION    go to state 119
+    UNARY_OPERATOR      go to state 51
+    CAST_EXPRESSION     go to state 120
+    CONSTANT            go to state 74
+
+
+State 52
+
+   30 MULTIPLICATIVE_EXPRESSION: CAST_EXPRESSION .
+
+    $default  reduce using rule 30 (MULTIPLICATIVE_EXPRESSION)
+
+
+State 53
+
+   31 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION . T_ASTERISK CAST_EXPRESSION
+   32                          | MULTIPLICATIVE_EXPRESSION . T_FRONTSLASH CAST_EXPRESSION
+   33                          | MULTIPLICATIVE_EXPRESSION . T_PERCENT CAST_EXPRESSION
+   34 ADDITIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION .
+
+    T_ASTERISK    shift, and go to state 121
+    T_FRONTSLASH  shift, and go to state 122
+    T_PERCENT     shift, and go to state 123
+
+    $default  reduce using rule 34 (ADDITIVE_EXPRESSION)
+
+
+State 54
+
+   35 ADDITIVE_EXPRESSION: ADDITIVE_EXPRESSION . T_PLUS MULTIPLICATIVE_EXPRESSION
+   36                    | ADDITIVE_EXPRESSION . T_MINUS MULTIPLICATIVE_EXPRESSION
+   37 SHIFT_EXPRESSION: ADDITIVE_EXPRESSION .
+
+    T_PLUS   shift, and go to state 124
+    T_MINUS  shift, and go to state 125
+
+    $default  reduce using rule 37 (SHIFT_EXPRESSION)
+
+
+State 55
+
+   38 SHIFT_EXPRESSION: SHIFT_EXPRESSION . T_LSHIFT ADDITIVE_EXPRESSION
+   39                 | SHIFT_EXPRESSION . T_RSHIFT ADDITIVE_EXPRESSION
+   40 RELATIONAL_EXPRESSION: SHIFT_EXPRESSION .
+
+    T_LSHIFT  shift, and go to state 126
+    T_RSHIFT  shift, and go to state 127
+
+    $default  reduce using rule 40 (RELATIONAL_EXPRESSION)
+
+
+State 56
+
+   41 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION . T_LESS SHIFT_EXPRESSION
+   42                      | RELATIONAL_EXPRESSION . T_GREATER SHIFT_EXPRESSION
+   43                      | RELATIONAL_EXPRESSION . T_LESS_EQUAL SHIFT_EXPRESSION
+   44                      | RELATIONAL_EXPRESSION . T_GREATER_EQUAL SHIFT_EXPRESSION
+   45 EQUALITY_EXPRESSION: RELATIONAL_EXPRESSION .
+
+    T_LESS           shift, and go to state 128
+    T_GREATER        shift, and go to state 129
+    T_LESS_EQUAL     shift, and go to state 130
+    T_GREATER_EQUAL  shift, and go to state 131
+
+    $default  reduce using rule 45 (EQUALITY_EXPRESSION)
+
+
+State 57
+
+   46 EQUALITY_EXPRESSION: EQUALITY_EXPRESSION . T_EQUAL_EQUAL RELATIONAL_EXPRESSION
+   47                    | EQUALITY_EXPRESSION . T_NOT_EQUAL RELATIONAL_EXPRESSION
+   48 AND_EXPRESSION: EQUALITY_EXPRESSION .
+
+    T_EQUAL_EQUAL  shift, and go to state 132
+    T_NOT_EQUAL    shift, and go to state 133
+
+    $default  reduce using rule 48 (AND_EXPRESSION)
+
+
+State 58
+
+   49 AND_EXPRESSION: AND_EXPRESSION . T_AMPERSAND EQUALITY_EXPRESSION
+   50 EXCLUSIVE_OR_EXPRESSION: AND_EXPRESSION .
+
+    T_AMPERSAND  shift, and go to state 134
+
+    $default  reduce using rule 50 (EXCLUSIVE_OR_EXPRESSION)
+
+
+State 59
+
+   51 EXCLUSIVE_OR_EXPRESSION: EXCLUSIVE_OR_EXPRESSION . T_XOR AND_EXPRESSION
+   52 INCLUSIVE_OR_EXPRESSION: EXCLUSIVE_OR_EXPRESSION .
+
+    T_XOR  shift, and go to state 135
+
+    $default  reduce using rule 52 (INCLUSIVE_OR_EXPRESSION)
+
+
+State 60
+
+   53 INCLUSIVE_OR_EXPRESSION: INCLUSIVE_OR_EXPRESSION . T_OR EXCLUSIVE_OR_EXPRESSION
+   54 LOGICAL_AND_EXPRESSION: INCLUSIVE_OR_EXPRESSION .
+
+    T_OR  shift, and go to state 136
+
+    $default  reduce using rule 54 (LOGICAL_AND_EXPRESSION)
+
+
+State 61
+
+   55 LOGICAL_AND_EXPRESSION: LOGICAL_AND_EXPRESSION . T_LOGICAL_AND INCLUSIVE_OR_EXPRESSION
+   56 LOGICAL_OR_EXPRESSION: LOGICAL_AND_EXPRESSION .
+
+    T_LOGICAL_AND  shift, and go to state 137
+
+    $default  reduce using rule 56 (LOGICAL_OR_EXPRESSION)
+
+
+State 62
+
+   57 LOGICAL_OR_EXPRESSION: LOGICAL_OR_EXPRESSION . T_LOGICAL_OR LOGICAL_AND_EXPRESSION
+   58 CONDITIONAL_EXPRESSION: LOGICAL_OR_EXPRESSION .
+   59                       | LOGICAL_OR_EXPRESSION . T_QUESTION EXPRESSION T_COLON CONDITIONAL_EXPRESSION
+
+    T_LOGICAL_OR  shift, and go to state 138
+    T_QUESTION    shift, and go to state 139
+
+    $default  reduce using rule 58 (CONDITIONAL_EXPRESSION)
+
+
+State 63
+
+   60 ASSIGNMENT_EXPRESSION: CONDITIONAL_EXPRESSION .
+
+    $default  reduce using rule 60 (ASSIGNMENT_EXPRESSION)
+
+
+State 64
+
+   72 EXPRESSION: ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 72 (EXPRESSION)
+
+
+State 65
+
+   73 EXPRESSION: EXPRESSION . T_COMMA ASSIGNMENT_EXPRESSION
+  112 EXPRESSION_STATEMENT: EXPRESSION . T_SEMICOLON
+
+    T_SEMICOLON  shift, and go to state 140
+    T_COMMA      shift, and go to state 141
+
+
+State 66
+
+  109 STATEMENT_LIST: STATEMENT .
+
+    $default  reduce using rule 109 (STATEMENT_LIST)
+
+
+State 67
+
+   98 STATEMENT: COMPOUND_STATEMENT .
+
+    $default  reduce using rule 98 (STATEMENT)
+
+
+State 68
+
+  104 COMPOUND_STATEMENT: T_LCURLY DECLARATION_LIST . T_RCURLY
+  106                   | T_LCURLY DECLARATION_LIST . STATEMENT_LIST T_RCURLY
+  108 DECLARATION_LIST: DECLARATION_LIST . DECLARATION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_SEMICOLON       shift, and go to state 33
+    T_LBRACKET        shift, and go to state 34
+    T_LCURLY          shift, and go to state 18
+    T_RCURLY          shift, and go to state 142
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_INT             shift, and go to state 2
+    T_IF              shift, and go to state 45
+    T_WHILE           shift, and go to state 46
+    T_RETURN          shift, and go to state 47
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 65
+    DECLARATION                go to state 76
+    DECLARATION_SPECIFIERS     go to state 20
+    TYPE_SPECIFIER             go to state 6
+    STATEMENT                  go to state 66
+    COMPOUND_STATEMENT         go to state 67
+    STATEMENT_LIST             go to state 143
+    EXPRESSION_STATEMENT       go to state 70
+    SELECTION_STATEMENT        go to state 71
+    ITERATION_STATEMENT        go to state 72
+    JUMP_STATEMENT             go to state 73
+    CONSTANT                   go to state 74
+
+
+State 69
+
+  105 COMPOUND_STATEMENT: T_LCURLY STATEMENT_LIST . T_RCURLY
+  110 STATEMENT_LIST: STATEMENT_LIST . STATEMENT
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_SEMICOLON       shift, and go to state 33
+    T_LBRACKET        shift, and go to state 34
+    T_LCURLY          shift, and go to state 18
+    T_RCURLY          shift, and go to state 144
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_IF              shift, and go to state 45
+    T_WHILE           shift, and go to state 46
+    T_RETURN          shift, and go to state 47
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 65
+    STATEMENT                  go to state 145
+    COMPOUND_STATEMENT         go to state 67
+    EXPRESSION_STATEMENT       go to state 70
+    SELECTION_STATEMENT        go to state 71
+    ITERATION_STATEMENT        go to state 72
+    JUMP_STATEMENT             go to state 73
+    CONSTANT                   go to state 74
+
+
+State 70
+
+   99 STATEMENT: EXPRESSION_STATEMENT .
+
+    $default  reduce using rule 99 (STATEMENT)
+
+
+State 71
+
+  100 STATEMENT: SELECTION_STATEMENT .
+
+    $default  reduce using rule 100 (STATEMENT)
+
+
+State 72
+
+  101 STATEMENT: ITERATION_STATEMENT .
+
+    $default  reduce using rule 101 (STATEMENT)
+
+
+State 73
+
+  102 STATEMENT: JUMP_STATEMENT .
+
+    $default  reduce using rule 102 (STATEMENT)
+
+
+State 74
+
+    3 PRIMARY_EXPRESSION: CONSTANT .
+
+    $default  reduce using rule 3 (PRIMARY_EXPRESSION)
+
+
+State 75
+
+   80 INIT_DECLARATOR: DECLARATOR .
+   81                | DECLARATOR . T_EQUALS INITIALIZER
+
+    T_EQUALS  shift, and go to state 27
+
+    $default  reduce using rule 80 (INIT_DECLARATOR)
+
+
+State 76
+
+  108 DECLARATION_LIST: DECLARATION_LIST DECLARATION .
+
+    $default  reduce using rule 108 (DECLARATION_LIST)
+
+
+State 77
+
+  123 FUNCTION_DEFINITION: DECLARATOR DECLARATION_LIST COMPOUND_STATEMENT .
+
+    $default  reduce using rule 123 (FUNCTION_DEFINITION)
+
+
+State 78
+
+   94 IDENTIFIER_LIST: T_IDENTIFIER .
+
+    $default  reduce using rule 94 (IDENTIFIER_LIST)
+
+
+State 79
+
+   87 DIRECT_DECLARATOR: DIRECT_DECLARATOR T_LBRACKET T_RBRACKET .
+
+    $default  reduce using rule 87 (DIRECT_DECLARATOR)
+
+
+State 80
+
+   93 PARAMETER_DECLARATION: DECLARATION_SPECIFIERS . DECLARATOR
+
+    T_IDENTIFIER  shift, and go to state 1
+
+    DECLARATOR         go to state 146
+    DIRECT_DECLARATOR  go to state 8
+
+
+State 81
+
+   86 DIRECT_DECLARATOR: DIRECT_DECLARATOR T_LBRACKET PARAMETER_TYPE_LIST . T_RBRACKET
+
+    T_RBRACKET  shift, and go to state 147
+
+
+State 82
+
+   89 PARAMETER_TYPE_LIST: PARAMETER_LIST .
+   90                    | PARAMETER_LIST . T_COMMA T_ELLIPSIS
+   92 PARAMETER_LIST: PARAMETER_LIST . T_COMMA PARAMETER_DECLARATION
+
+    T_COMMA  shift, and go to state 148
+
+    $default  reduce using rule 89 (PARAMETER_TYPE_LIST)
+
+
+State 83
+
+   91 PARAMETER_LIST: PARAMETER_DECLARATION .
+
+    $default  reduce using rule 91 (PARAMETER_LIST)
+
+
+State 84
+
+   88 DIRECT_DECLARATOR: DIRECT_DECLARATOR T_LBRACKET IDENTIFIER_LIST . T_RBRACKET
+   95 IDENTIFIER_LIST: IDENTIFIER_LIST . T_COMMA T_IDENTIFIER
+
+    T_RBRACKET  shift, and go to state 149
+    T_COMMA     shift, and go to state 150
+
+
+State 85
+
+   79 INIT_DECLARATOR_LIST: INIT_DECLARATOR_LIST T_COMMA INIT_DECLARATOR .
+
+    $default  reduce using rule 79 (INIT_DECLARATOR_LIST)
+
+
+State 86
+
+   97 INITIALIZER: ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 97 (INITIALIZER)
+
+
+State 87
+
+   81 INIT_DECLARATOR: DECLARATOR T_EQUALS INITIALIZER .
+
+    $default  reduce using rule 81 (INIT_DECLARATOR)
+
+
+State 88
+
+  125 FUNCTION_DEFINITION: DECLARATION_SPECIFIERS DECLARATOR DECLARATION_LIST COMPOUND_STATEMENT .
+
+    $default  reduce using rule 125 (FUNCTION_DEFINITION)
+
+
+State 89
+
+    5 PRIMARY_EXPRESSION: T_LBRACKET EXPRESSION . T_RBRACKET
+   73 EXPRESSION: EXPRESSION . T_COMMA ASSIGNMENT_EXPRESSION
+
+    T_RBRACKET  shift, and go to state 151
+    T_COMMA     shift, and go to state 141
+
+
+State 90
+
+   83 SPECIFIER_QUALIFIER_LIST: TYPE_SPECIFIER .
+
+    $default  reduce using rule 83 (SPECIFIER_QUALIFIER_LIST)
+
+
+State 91
+
+   96 TYPE_NAME: SPECIFIER_QUALIFIER_LIST .
+
+    $default  reduce using rule 96 (TYPE_NAME)
+
+
+State 92
+
+   29 CAST_EXPRESSION: T_LBRACKET TYPE_NAME . T_RBRACKET CAST_EXPRESSION
+
+    T_RBRACKET  shift, and go to state 152
+
+
+State 93
+
+    5 PRIMARY_EXPRESSION: T_LBRACKET . EXPRESSION T_RBRACKET
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 89
+    CONSTANT                   go to state 74
+
+
+State 94
+
+   17 UNARY_EXPRESSION: T_INCREMENT UNARY_EXPRESSION .
+
+    $default  reduce using rule 17 (UNARY_EXPRESSION)
+
+
+State 95
+
+   18 UNARY_EXPRESSION: T_DECREMENT UNARY_EXPRESSION .
+
+    $default  reduce using rule 18 (UNARY_EXPRESSION)
+
+
+State 96
+
+    5 PRIMARY_EXPRESSION: T_LBRACKET . EXPRESSION T_RBRACKET
+   21 UNARY_EXPRESSION: T_SIZEOF T_LBRACKET . TYPE_NAME T_RBRACKET
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_INT             shift, and go to state 2
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 89
+    TYPE_SPECIFIER             go to state 90
+    SPECIFIER_QUALIFIER_LIST   go to state 91
+    TYPE_NAME                  go to state 153
+    CONSTANT                   go to state 74
+
+
+State 97
+
+   20 UNARY_EXPRESSION: T_SIZEOF UNARY_EXPRESSION .
+
+    $default  reduce using rule 20 (UNARY_EXPRESSION)
+
+
+State 98
+
+  113 SELECTION_STATEMENT: T_IF T_LBRACKET . EXPRESSION T_RBRACKET STATEMENT
+  114                    | T_IF T_LBRACKET . EXPRESSION T_RBRACKET STATEMENT T_ELSE STATEMENT
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 154
+    CONSTANT                   go to state 74
+
+
+State 99
+
+  115 ITERATION_STATEMENT: T_WHILE T_LBRACKET . EXPRESSION T_RBRACKET STATEMENT
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 155
+    CONSTANT                   go to state 74
+
+
+State 100
+
+  116 JUMP_STATEMENT: T_RETURN T_SEMICOLON .
+
+    $default  reduce using rule 116 (JUMP_STATEMENT)
+
+
+State 101
+
+   73 EXPRESSION: EXPRESSION . T_COMMA ASSIGNMENT_EXPRESSION
+  117 JUMP_STATEMENT: T_RETURN EXPRESSION . T_SEMICOLON
+
+    T_SEMICOLON  shift, and go to state 156
+    T_COMMA      shift, and go to state 141
+
+
+State 102
+
+    8 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_LBRACKET . T_RBRACKET
+    9                   | POSTFIX_EXPRESSION T_LBRACKET . ARGUMENT_EXPRESSION_LIST T_RBRACKET
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_RBRACKET        shift, and go to state 157
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    ARGUMENT_EXPRESSION_LIST   go to state 158
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 159
+    CONSTANT                   go to state 74
+
+
+State 103
+
+    7 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_LSQUARE . EXPRESSION T_RSQUARE
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 160
+    CONSTANT                   go to state 74
+
+
+State 104
+
+   10 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_FULLSTOP . T_IDENTIFIER
+
+    T_IDENTIFIER  shift, and go to state 161
+
+
+State 105
+
+   11 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_ARROW . T_IDENTIFIER
+
+    T_IDENTIFIER  shift, and go to state 162
+
+
+State 106
+
+   12 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_INCREMENT .
+
+    $default  reduce using rule 12 (POSTFIX_EXPRESSION)
+
+
+State 107
+
+   13 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_DECREMENT .
+
+    $default  reduce using rule 13 (POSTFIX_EXPRESSION)
+
+
+State 108
+
+   61 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 163
+    CONSTANT                   go to state 74
+
+
+State 109
+
+   62 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_MUL . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 164
+    CONSTANT                   go to state 74
+
+
+State 110
+
+   63 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_DIV . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 165
+    CONSTANT                   go to state 74
+
+
+State 111
+
+   64 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_MOD . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 166
+    CONSTANT                   go to state 74
+
+
+State 112
+
+   65 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_ADD . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 167
+    CONSTANT                   go to state 74
+
+
+State 113
+
+   66 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_SUB . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 168
+    CONSTANT                   go to state 74
+
+
+State 114
+
+   67 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_LSHIFT . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 169
+    CONSTANT                   go to state 74
+
+
+State 115
+
+   68 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_RSHIFT . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 170
+    CONSTANT                   go to state 74
+
+
+State 116
+
+   69 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_AND . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 171
+    CONSTANT                   go to state 74
+
+
+State 117
+
+   70 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_XOR . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 172
+    CONSTANT                   go to state 74
+
+
+State 118
+
+   71 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_OR . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 173
+    CONSTANT                   go to state 74
+
+
+State 119
+
+   28 CAST_EXPRESSION: UNARY_EXPRESSION .
+
+    $default  reduce using rule 28 (CAST_EXPRESSION)
+
+
+State 120
+
+   19 UNARY_EXPRESSION: UNARY_OPERATOR CAST_EXPRESSION .
+
+    $default  reduce using rule 19 (UNARY_EXPRESSION)
+
+
+State 121
+
+   31 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION T_ASTERISK . CAST_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION  go to state 48
+    POSTFIX_EXPRESSION  go to state 49
+    UNARY_EXPRESSION    go to state 119
+    UNARY_OPERATOR      go to state 51
+    CAST_EXPRESSION     go to state 174
+    CONSTANT            go to state 74
+
+
+State 122
+
+   32 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION T_FRONTSLASH . CAST_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION  go to state 48
+    POSTFIX_EXPRESSION  go to state 49
+    UNARY_EXPRESSION    go to state 119
+    UNARY_OPERATOR      go to state 51
+    CAST_EXPRESSION     go to state 175
+    CONSTANT            go to state 74
+
+
+State 123
+
+   33 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION T_PERCENT . CAST_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION  go to state 48
+    POSTFIX_EXPRESSION  go to state 49
+    UNARY_EXPRESSION    go to state 119
+    UNARY_OPERATOR      go to state 51
+    CAST_EXPRESSION     go to state 176
+    CONSTANT            go to state 74
+
+
+State 124
+
+   35 ADDITIVE_EXPRESSION: ADDITIVE_EXPRESSION T_PLUS . MULTIPLICATIVE_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 177
+    CONSTANT                   go to state 74
+
+
+State 125
+
+   36 ADDITIVE_EXPRESSION: ADDITIVE_EXPRESSION T_MINUS . MULTIPLICATIVE_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 178
+    CONSTANT                   go to state 74
+
+
+State 126
+
+   38 SHIFT_EXPRESSION: SHIFT_EXPRESSION T_LSHIFT . ADDITIVE_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 179
+    CONSTANT                   go to state 74
+
+
+State 127
+
+   39 SHIFT_EXPRESSION: SHIFT_EXPRESSION T_RSHIFT . ADDITIVE_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 180
+    CONSTANT                   go to state 74
+
+
+State 128
+
+   41 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION T_LESS . SHIFT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 181
+    CONSTANT                   go to state 74
+
+
+State 129
+
+   42 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION T_GREATER . SHIFT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 182
+    CONSTANT                   go to state 74
+
+
+State 130
+
+   43 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION T_LESS_EQUAL . SHIFT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 183
+    CONSTANT                   go to state 74
+
+
+State 131
+
+   44 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION T_GREATER_EQUAL . SHIFT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 184
+    CONSTANT                   go to state 74
+
+
+State 132
+
+   46 EQUALITY_EXPRESSION: EQUALITY_EXPRESSION T_EQUAL_EQUAL . RELATIONAL_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 185
+    CONSTANT                   go to state 74
+
+
+State 133
+
+   47 EQUALITY_EXPRESSION: EQUALITY_EXPRESSION T_NOT_EQUAL . RELATIONAL_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 186
+    CONSTANT                   go to state 74
+
+
+State 134
+
+   49 AND_EXPRESSION: AND_EXPRESSION T_AMPERSAND . EQUALITY_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 187
+    CONSTANT                   go to state 74
+
+
+State 135
+
+   51 EXCLUSIVE_OR_EXPRESSION: EXCLUSIVE_OR_EXPRESSION T_XOR . AND_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 188
+    CONSTANT                   go to state 74
+
+
+State 136
+
+   53 INCLUSIVE_OR_EXPRESSION: INCLUSIVE_OR_EXPRESSION T_OR . EXCLUSIVE_OR_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 189
+    CONSTANT                   go to state 74
+
+
+State 137
+
+   55 LOGICAL_AND_EXPRESSION: LOGICAL_AND_EXPRESSION T_LOGICAL_AND . INCLUSIVE_OR_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 190
+    CONSTANT                   go to state 74
+
+
+State 138
+
+   57 LOGICAL_OR_EXPRESSION: LOGICAL_OR_EXPRESSION T_LOGICAL_OR . LOGICAL_AND_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 191
+    CONSTANT                   go to state 74
+
+
+State 139
+
+   59 CONDITIONAL_EXPRESSION: LOGICAL_OR_EXPRESSION T_QUESTION . EXPRESSION T_COLON CONDITIONAL_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 192
+    CONSTANT                   go to state 74
+
+
+State 140
+
+  112 EXPRESSION_STATEMENT: EXPRESSION T_SEMICOLON .
+
+    $default  reduce using rule 112 (EXPRESSION_STATEMENT)
+
+
+State 141
+
+   73 EXPRESSION: EXPRESSION T_COMMA . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 193
+    CONSTANT                   go to state 74
+
+
+State 142
+
+  104 COMPOUND_STATEMENT: T_LCURLY DECLARATION_LIST T_RCURLY .
+
+    $default  reduce using rule 104 (COMPOUND_STATEMENT)
+
+
+State 143
+
+  106 COMPOUND_STATEMENT: T_LCURLY DECLARATION_LIST STATEMENT_LIST . T_RCURLY
+  110 STATEMENT_LIST: STATEMENT_LIST . STATEMENT
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_SEMICOLON       shift, and go to state 33
+    T_LBRACKET        shift, and go to state 34
+    T_LCURLY          shift, and go to state 18
+    T_RCURLY          shift, and go to state 194
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_IF              shift, and go to state 45
+    T_WHILE           shift, and go to state 46
+    T_RETURN          shift, and go to state 47
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 65
+    STATEMENT                  go to state 145
+    COMPOUND_STATEMENT         go to state 67
+    EXPRESSION_STATEMENT       go to state 70
+    SELECTION_STATEMENT        go to state 71
+    ITERATION_STATEMENT        go to state 72
+    JUMP_STATEMENT             go to state 73
+    CONSTANT                   go to state 74
+
+
+State 144
+
+  105 COMPOUND_STATEMENT: T_LCURLY STATEMENT_LIST T_RCURLY .
+
+    $default  reduce using rule 105 (COMPOUND_STATEMENT)
+
+
+State 145
+
+  110 STATEMENT_LIST: STATEMENT_LIST STATEMENT .
+
+    $default  reduce using rule 110 (STATEMENT_LIST)
+
+
+State 146
+
+   93 PARAMETER_DECLARATION: DECLARATION_SPECIFIERS DECLARATOR .
+
+    $default  reduce using rule 93 (PARAMETER_DECLARATION)
+
+
+State 147
+
+   86 DIRECT_DECLARATOR: DIRECT_DECLARATOR T_LBRACKET PARAMETER_TYPE_LIST T_RBRACKET .
+
+    $default  reduce using rule 86 (DIRECT_DECLARATOR)
+
+
+State 148
+
+   90 PARAMETER_TYPE_LIST: PARAMETER_LIST T_COMMA . T_ELLIPSIS
+   92 PARAMETER_LIST: PARAMETER_LIST T_COMMA . PARAMETER_DECLARATION
+
+    T_INT       shift, and go to state 2
+    T_ELLIPSIS  shift, and go to state 195
+
+    DECLARATION_SPECIFIERS  go to state 80
+    TYPE_SPECIFIER          go to state 6
+    PARAMETER_DECLARATION   go to state 196
+
+
+State 149
+
+   88 DIRECT_DECLARATOR: DIRECT_DECLARATOR T_LBRACKET IDENTIFIER_LIST T_RBRACKET .
+
+    $default  reduce using rule 88 (DIRECT_DECLARATOR)
+
+
+State 150
+
+   95 IDENTIFIER_LIST: IDENTIFIER_LIST T_COMMA . T_IDENTIFIER
+
+    T_IDENTIFIER  shift, and go to state 197
+
+
+State 151
+
+    5 PRIMARY_EXPRESSION: T_LBRACKET EXPRESSION T_RBRACKET .
+
+    $default  reduce using rule 5 (PRIMARY_EXPRESSION)
+
+
+State 152
+
+   29 CAST_EXPRESSION: T_LBRACKET TYPE_NAME T_RBRACKET . CAST_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION  go to state 48
+    POSTFIX_EXPRESSION  go to state 49
+    UNARY_EXPRESSION    go to state 119
+    UNARY_OPERATOR      go to state 51
+    CAST_EXPRESSION     go to state 198
+    CONSTANT            go to state 74
+
+
+State 153
+
+   21 UNARY_EXPRESSION: T_SIZEOF T_LBRACKET TYPE_NAME . T_RBRACKET
+
+    T_RBRACKET  shift, and go to state 199
+
+
+State 154
+
+   73 EXPRESSION: EXPRESSION . T_COMMA ASSIGNMENT_EXPRESSION
+  113 SELECTION_STATEMENT: T_IF T_LBRACKET EXPRESSION . T_RBRACKET STATEMENT
+  114                    | T_IF T_LBRACKET EXPRESSION . T_RBRACKET STATEMENT T_ELSE STATEMENT
+
+    T_RBRACKET  shift, and go to state 200
+    T_COMMA     shift, and go to state 141
+
+
+State 155
+
+   73 EXPRESSION: EXPRESSION . T_COMMA ASSIGNMENT_EXPRESSION
+  115 ITERATION_STATEMENT: T_WHILE T_LBRACKET EXPRESSION . T_RBRACKET STATEMENT
+
+    T_RBRACKET  shift, and go to state 201
+    T_COMMA     shift, and go to state 141
+
+
+State 156
+
+  117 JUMP_STATEMENT: T_RETURN EXPRESSION T_SEMICOLON .
+
+    $default  reduce using rule 117 (JUMP_STATEMENT)
+
+
+State 157
+
+    8 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_LBRACKET T_RBRACKET .
+
+    $default  reduce using rule 8 (POSTFIX_EXPRESSION)
+
+
+State 158
+
+    9 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_LBRACKET ARGUMENT_EXPRESSION_LIST . T_RBRACKET
+   15 ARGUMENT_EXPRESSION_LIST: ARGUMENT_EXPRESSION_LIST . T_COMMA ASSIGNMENT_EXPRESSION
+
+    T_RBRACKET  shift, and go to state 202
+    T_COMMA     shift, and go to state 203
+
+
+State 159
+
+   14 ARGUMENT_EXPRESSION_LIST: ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 14 (ARGUMENT_EXPRESSION_LIST)
+
+
+State 160
+
+    7 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_LSQUARE EXPRESSION . T_RSQUARE
+   73 EXPRESSION: EXPRESSION . T_COMMA ASSIGNMENT_EXPRESSION
+
+    T_COMMA    shift, and go to state 141
+    T_RSQUARE  shift, and go to state 204
+
+
+State 161
+
+   10 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_FULLSTOP T_IDENTIFIER .
+
+    $default  reduce using rule 10 (POSTFIX_EXPRESSION)
+
+
+State 162
+
+   11 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_ARROW T_IDENTIFIER .
+
+    $default  reduce using rule 11 (POSTFIX_EXPRESSION)
+
+
+State 163
+
+   61 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 61 (ASSIGNMENT_EXPRESSION)
+
+
+State 164
+
+   62 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_MUL ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 62 (ASSIGNMENT_EXPRESSION)
+
+
+State 165
+
+   63 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_DIV ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 63 (ASSIGNMENT_EXPRESSION)
+
+
+State 166
+
+   64 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_MOD ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 64 (ASSIGNMENT_EXPRESSION)
+
+
+State 167
+
+   65 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_ADD ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 65 (ASSIGNMENT_EXPRESSION)
+
+
+State 168
+
+   66 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_SUB ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 66 (ASSIGNMENT_EXPRESSION)
+
+
+State 169
+
+   67 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_LSHIFT ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 67 (ASSIGNMENT_EXPRESSION)
+
+
+State 170
+
+   68 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_RSHIFT ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 68 (ASSIGNMENT_EXPRESSION)
+
+
+State 171
+
+   69 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_AND ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 69 (ASSIGNMENT_EXPRESSION)
+
+
+State 172
+
+   70 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_XOR ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 70 (ASSIGNMENT_EXPRESSION)
+
+
+State 173
+
+   71 ASSIGNMENT_EXPRESSION: UNARY_EXPRESSION T_EQUALS_OR ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 71 (ASSIGNMENT_EXPRESSION)
+
+
+State 174
+
+   31 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION T_ASTERISK CAST_EXPRESSION .
+
+    $default  reduce using rule 31 (MULTIPLICATIVE_EXPRESSION)
+
+
+State 175
+
+   32 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION T_FRONTSLASH CAST_EXPRESSION .
+
+    $default  reduce using rule 32 (MULTIPLICATIVE_EXPRESSION)
+
+
+State 176
+
+   33 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION T_PERCENT CAST_EXPRESSION .
+
+    $default  reduce using rule 33 (MULTIPLICATIVE_EXPRESSION)
+
+
+State 177
+
+   31 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION . T_ASTERISK CAST_EXPRESSION
+   32                          | MULTIPLICATIVE_EXPRESSION . T_FRONTSLASH CAST_EXPRESSION
+   33                          | MULTIPLICATIVE_EXPRESSION . T_PERCENT CAST_EXPRESSION
+   35 ADDITIVE_EXPRESSION: ADDITIVE_EXPRESSION T_PLUS MULTIPLICATIVE_EXPRESSION .
+
+    T_ASTERISK    shift, and go to state 121
+    T_FRONTSLASH  shift, and go to state 122
+    T_PERCENT     shift, and go to state 123
+
+    $default  reduce using rule 35 (ADDITIVE_EXPRESSION)
+
+
+State 178
+
+   31 MULTIPLICATIVE_EXPRESSION: MULTIPLICATIVE_EXPRESSION . T_ASTERISK CAST_EXPRESSION
+   32                          | MULTIPLICATIVE_EXPRESSION . T_FRONTSLASH CAST_EXPRESSION
+   33                          | MULTIPLICATIVE_EXPRESSION . T_PERCENT CAST_EXPRESSION
+   36 ADDITIVE_EXPRESSION: ADDITIVE_EXPRESSION T_MINUS MULTIPLICATIVE_EXPRESSION .
+
+    T_ASTERISK    shift, and go to state 121
+    T_FRONTSLASH  shift, and go to state 122
+    T_PERCENT     shift, and go to state 123
+
+    $default  reduce using rule 36 (ADDITIVE_EXPRESSION)
+
+
+State 179
+
+   35 ADDITIVE_EXPRESSION: ADDITIVE_EXPRESSION . T_PLUS MULTIPLICATIVE_EXPRESSION
+   36                    | ADDITIVE_EXPRESSION . T_MINUS MULTIPLICATIVE_EXPRESSION
+   38 SHIFT_EXPRESSION: SHIFT_EXPRESSION T_LSHIFT ADDITIVE_EXPRESSION .
+
+    T_PLUS   shift, and go to state 124
+    T_MINUS  shift, and go to state 125
+
+    $default  reduce using rule 38 (SHIFT_EXPRESSION)
+
+
+State 180
+
+   35 ADDITIVE_EXPRESSION: ADDITIVE_EXPRESSION . T_PLUS MULTIPLICATIVE_EXPRESSION
+   36                    | ADDITIVE_EXPRESSION . T_MINUS MULTIPLICATIVE_EXPRESSION
+   39 SHIFT_EXPRESSION: SHIFT_EXPRESSION T_RSHIFT ADDITIVE_EXPRESSION .
+
+    T_PLUS   shift, and go to state 124
+    T_MINUS  shift, and go to state 125
+
+    $default  reduce using rule 39 (SHIFT_EXPRESSION)
+
+
+State 181
+
+   38 SHIFT_EXPRESSION: SHIFT_EXPRESSION . T_LSHIFT ADDITIVE_EXPRESSION
+   39                 | SHIFT_EXPRESSION . T_RSHIFT ADDITIVE_EXPRESSION
+   41 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION T_LESS SHIFT_EXPRESSION .
+
+    T_LSHIFT  shift, and go to state 126
+    T_RSHIFT  shift, and go to state 127
+
+    $default  reduce using rule 41 (RELATIONAL_EXPRESSION)
+
+
+State 182
+
+   38 SHIFT_EXPRESSION: SHIFT_EXPRESSION . T_LSHIFT ADDITIVE_EXPRESSION
+   39                 | SHIFT_EXPRESSION . T_RSHIFT ADDITIVE_EXPRESSION
+   42 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION T_GREATER SHIFT_EXPRESSION .
+
+    T_LSHIFT  shift, and go to state 126
+    T_RSHIFT  shift, and go to state 127
+
+    $default  reduce using rule 42 (RELATIONAL_EXPRESSION)
+
+
+State 183
+
+   38 SHIFT_EXPRESSION: SHIFT_EXPRESSION . T_LSHIFT ADDITIVE_EXPRESSION
+   39                 | SHIFT_EXPRESSION . T_RSHIFT ADDITIVE_EXPRESSION
+   43 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION T_LESS_EQUAL SHIFT_EXPRESSION .
+
+    T_LSHIFT  shift, and go to state 126
+    T_RSHIFT  shift, and go to state 127
+
+    $default  reduce using rule 43 (RELATIONAL_EXPRESSION)
+
+
+State 184
+
+   38 SHIFT_EXPRESSION: SHIFT_EXPRESSION . T_LSHIFT ADDITIVE_EXPRESSION
+   39                 | SHIFT_EXPRESSION . T_RSHIFT ADDITIVE_EXPRESSION
+   44 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION T_GREATER_EQUAL SHIFT_EXPRESSION .
+
+    T_LSHIFT  shift, and go to state 126
+    T_RSHIFT  shift, and go to state 127
+
+    $default  reduce using rule 44 (RELATIONAL_EXPRESSION)
+
+
+State 185
+
+   41 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION . T_LESS SHIFT_EXPRESSION
+   42                      | RELATIONAL_EXPRESSION . T_GREATER SHIFT_EXPRESSION
+   43                      | RELATIONAL_EXPRESSION . T_LESS_EQUAL SHIFT_EXPRESSION
+   44                      | RELATIONAL_EXPRESSION . T_GREATER_EQUAL SHIFT_EXPRESSION
+   46 EQUALITY_EXPRESSION: EQUALITY_EXPRESSION T_EQUAL_EQUAL RELATIONAL_EXPRESSION .
+
+    T_LESS           shift, and go to state 128
+    T_GREATER        shift, and go to state 129
+    T_LESS_EQUAL     shift, and go to state 130
+    T_GREATER_EQUAL  shift, and go to state 131
+
+    $default  reduce using rule 46 (EQUALITY_EXPRESSION)
+
+
+State 186
+
+   41 RELATIONAL_EXPRESSION: RELATIONAL_EXPRESSION . T_LESS SHIFT_EXPRESSION
+   42                      | RELATIONAL_EXPRESSION . T_GREATER SHIFT_EXPRESSION
+   43                      | RELATIONAL_EXPRESSION . T_LESS_EQUAL SHIFT_EXPRESSION
+   44                      | RELATIONAL_EXPRESSION . T_GREATER_EQUAL SHIFT_EXPRESSION
+   47 EQUALITY_EXPRESSION: EQUALITY_EXPRESSION T_NOT_EQUAL RELATIONAL_EXPRESSION .
+
+    T_LESS           shift, and go to state 128
+    T_GREATER        shift, and go to state 129
+    T_LESS_EQUAL     shift, and go to state 130
+    T_GREATER_EQUAL  shift, and go to state 131
+
+    $default  reduce using rule 47 (EQUALITY_EXPRESSION)
+
+
+State 187
+
+   46 EQUALITY_EXPRESSION: EQUALITY_EXPRESSION . T_EQUAL_EQUAL RELATIONAL_EXPRESSION
+   47                    | EQUALITY_EXPRESSION . T_NOT_EQUAL RELATIONAL_EXPRESSION
+   49 AND_EXPRESSION: AND_EXPRESSION T_AMPERSAND EQUALITY_EXPRESSION .
+
+    T_EQUAL_EQUAL  shift, and go to state 132
+    T_NOT_EQUAL    shift, and go to state 133
+
+    $default  reduce using rule 49 (AND_EXPRESSION)
+
+
+State 188
+
+   49 AND_EXPRESSION: AND_EXPRESSION . T_AMPERSAND EQUALITY_EXPRESSION
+   51 EXCLUSIVE_OR_EXPRESSION: EXCLUSIVE_OR_EXPRESSION T_XOR AND_EXPRESSION .
+
+    T_AMPERSAND  shift, and go to state 134
+
+    $default  reduce using rule 51 (EXCLUSIVE_OR_EXPRESSION)
+
+
+State 189
+
+   51 EXCLUSIVE_OR_EXPRESSION: EXCLUSIVE_OR_EXPRESSION . T_XOR AND_EXPRESSION
+   53 INCLUSIVE_OR_EXPRESSION: INCLUSIVE_OR_EXPRESSION T_OR EXCLUSIVE_OR_EXPRESSION .
+
+    T_XOR  shift, and go to state 135
+
+    $default  reduce using rule 53 (INCLUSIVE_OR_EXPRESSION)
+
+
+State 190
+
+   53 INCLUSIVE_OR_EXPRESSION: INCLUSIVE_OR_EXPRESSION . T_OR EXCLUSIVE_OR_EXPRESSION
+   55 LOGICAL_AND_EXPRESSION: LOGICAL_AND_EXPRESSION T_LOGICAL_AND INCLUSIVE_OR_EXPRESSION .
+
+    T_OR  shift, and go to state 136
+
+    $default  reduce using rule 55 (LOGICAL_AND_EXPRESSION)
+
+
+State 191
+
+   55 LOGICAL_AND_EXPRESSION: LOGICAL_AND_EXPRESSION . T_LOGICAL_AND INCLUSIVE_OR_EXPRESSION
+   57 LOGICAL_OR_EXPRESSION: LOGICAL_OR_EXPRESSION T_LOGICAL_OR LOGICAL_AND_EXPRESSION .
+
+    T_LOGICAL_AND  shift, and go to state 137
+
+    $default  reduce using rule 57 (LOGICAL_OR_EXPRESSION)
+
+
+State 192
+
+   59 CONDITIONAL_EXPRESSION: LOGICAL_OR_EXPRESSION T_QUESTION EXPRESSION . T_COLON CONDITIONAL_EXPRESSION
+   73 EXPRESSION: EXPRESSION . T_COMMA ASSIGNMENT_EXPRESSION
+
+    T_COMMA  shift, and go to state 141
+    T_COLON  shift, and go to state 205
+
+
+State 193
+
+   73 EXPRESSION: EXPRESSION T_COMMA ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 73 (EXPRESSION)
+
+
+State 194
+
+  106 COMPOUND_STATEMENT: T_LCURLY DECLARATION_LIST STATEMENT_LIST T_RCURLY .
+
+    $default  reduce using rule 106 (COMPOUND_STATEMENT)
+
+
+State 195
+
+   90 PARAMETER_TYPE_LIST: PARAMETER_LIST T_COMMA T_ELLIPSIS .
+
+    $default  reduce using rule 90 (PARAMETER_TYPE_LIST)
+
+
+State 196
+
+   92 PARAMETER_LIST: PARAMETER_LIST T_COMMA PARAMETER_DECLARATION .
+
+    $default  reduce using rule 92 (PARAMETER_LIST)
+
+
+State 197
+
+   95 IDENTIFIER_LIST: IDENTIFIER_LIST T_COMMA T_IDENTIFIER .
+
+    $default  reduce using rule 95 (IDENTIFIER_LIST)
+
+
+State 198
+
+   29 CAST_EXPRESSION: T_LBRACKET TYPE_NAME T_RBRACKET CAST_EXPRESSION .
+
+    $default  reduce using rule 29 (CAST_EXPRESSION)
+
+
+State 199
+
+   21 UNARY_EXPRESSION: T_SIZEOF T_LBRACKET TYPE_NAME T_RBRACKET .
+
+    $default  reduce using rule 21 (UNARY_EXPRESSION)
+
+
+State 200
+
+  113 SELECTION_STATEMENT: T_IF T_LBRACKET EXPRESSION T_RBRACKET . STATEMENT
+  114                    | T_IF T_LBRACKET EXPRESSION T_RBRACKET . STATEMENT T_ELSE STATEMENT
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_SEMICOLON       shift, and go to state 33
+    T_LBRACKET        shift, and go to state 34
+    T_LCURLY          shift, and go to state 18
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_IF              shift, and go to state 45
+    T_WHILE           shift, and go to state 46
+    T_RETURN          shift, and go to state 47
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 65
+    STATEMENT                  go to state 206
+    COMPOUND_STATEMENT         go to state 67
+    EXPRESSION_STATEMENT       go to state 70
+    SELECTION_STATEMENT        go to state 71
+    ITERATION_STATEMENT        go to state 72
+    JUMP_STATEMENT             go to state 73
+    CONSTANT                   go to state 74
+
+
+State 201
+
+  115 ITERATION_STATEMENT: T_WHILE T_LBRACKET EXPRESSION T_RBRACKET . STATEMENT
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_SEMICOLON       shift, and go to state 33
+    T_LBRACKET        shift, and go to state 34
+    T_LCURLY          shift, and go to state 18
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_IF              shift, and go to state 45
+    T_WHILE           shift, and go to state 46
+    T_RETURN          shift, and go to state 47
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 65
+    STATEMENT                  go to state 207
+    COMPOUND_STATEMENT         go to state 67
+    EXPRESSION_STATEMENT       go to state 70
+    SELECTION_STATEMENT        go to state 71
+    ITERATION_STATEMENT        go to state 72
+    JUMP_STATEMENT             go to state 73
+    CONSTANT                   go to state 74
+
+
+State 202
+
+    9 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_LBRACKET ARGUMENT_EXPRESSION_LIST T_RBRACKET .
+
+    $default  reduce using rule 9 (POSTFIX_EXPRESSION)
+
+
+State 203
+
+   15 ARGUMENT_EXPRESSION_LIST: ARGUMENT_EXPRESSION_LIST T_COMMA . ASSIGNMENT_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 208
+    CONSTANT                   go to state 74
+
+
+State 204
+
+    7 POSTFIX_EXPRESSION: POSTFIX_EXPRESSION T_LSQUARE EXPRESSION T_RSQUARE .
+
+    $default  reduce using rule 7 (POSTFIX_EXPRESSION)
+
+
+State 205
+
+   59 CONDITIONAL_EXPRESSION: LOGICAL_OR_EXPRESSION T_QUESTION EXPRESSION T_COLON . CONDITIONAL_EXPRESSION
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_LBRACKET        shift, and go to state 34
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 119
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 209
+    CONSTANT                   go to state 74
+
+
+State 206
+
+  113 SELECTION_STATEMENT: T_IF T_LBRACKET EXPRESSION T_RBRACKET STATEMENT .
+  114                    | T_IF T_LBRACKET EXPRESSION T_RBRACKET STATEMENT . T_ELSE STATEMENT
+
+    T_ELSE  shift, and go to state 210
+
+    $default  reduce using rule 113 (SELECTION_STATEMENT)
+
+
+State 207
+
+  115 ITERATION_STATEMENT: T_WHILE T_LBRACKET EXPRESSION T_RBRACKET STATEMENT .
+
+    $default  reduce using rule 115 (ITERATION_STATEMENT)
+
+
+State 208
+
+   15 ARGUMENT_EXPRESSION_LIST: ARGUMENT_EXPRESSION_LIST T_COMMA ASSIGNMENT_EXPRESSION .
+
+    $default  reduce using rule 15 (ARGUMENT_EXPRESSION_LIST)
+
+
+State 209
+
+   59 CONDITIONAL_EXPRESSION: LOGICAL_OR_EXPRESSION T_QUESTION EXPRESSION T_COLON CONDITIONAL_EXPRESSION .
+
+    $default  reduce using rule 59 (CONDITIONAL_EXPRESSION)
+
+
+State 210
+
+  114 SELECTION_STATEMENT: T_IF T_LBRACKET EXPRESSION T_RBRACKET STATEMENT T_ELSE . STATEMENT
+
+    T_INT_CONSTANT    shift, and go to state 30
+    T_IDENTIFIER      shift, and go to state 31
+    T_STRING_LITERAL  shift, and go to state 32
+    T_SEMICOLON       shift, and go to state 33
+    T_LBRACKET        shift, and go to state 34
+    T_LCURLY          shift, and go to state 18
+    T_TILDE           shift, and go to state 36
+    T_INCREMENT       shift, and go to state 37
+    T_DECREMENT       shift, and go to state 38
+    T_SIZEOF          shift, and go to state 39
+    T_AMPERSAND       shift, and go to state 40
+    T_ASTERISK        shift, and go to state 41
+    T_PLUS            shift, and go to state 42
+    T_MINUS           shift, and go to state 43
+    T_EXCLAMATION     shift, and go to state 44
+    T_IF              shift, and go to state 45
+    T_WHILE           shift, and go to state 46
+    T_RETURN          shift, and go to state 47
+
+    PRIMARY_EXPRESSION         go to state 48
+    POSTFIX_EXPRESSION         go to state 49
+    UNARY_EXPRESSION           go to state 50
+    UNARY_OPERATOR             go to state 51
+    CAST_EXPRESSION            go to state 52
+    MULTIPLICATIVE_EXPRESSION  go to state 53
+    ADDITIVE_EXPRESSION        go to state 54
+    SHIFT_EXPRESSION           go to state 55
+    RELATIONAL_EXPRESSION      go to state 56
+    EQUALITY_EXPRESSION        go to state 57
+    AND_EXPRESSION             go to state 58
+    EXCLUSIVE_OR_EXPRESSION    go to state 59
+    INCLUSIVE_OR_EXPRESSION    go to state 60
+    LOGICAL_AND_EXPRESSION     go to state 61
+    LOGICAL_OR_EXPRESSION      go to state 62
+    CONDITIONAL_EXPRESSION     go to state 63
+    ASSIGNMENT_EXPRESSION      go to state 64
+    EXPRESSION                 go to state 65
+    STATEMENT                  go to state 211
+    COMPOUND_STATEMENT         go to state 67
+    EXPRESSION_STATEMENT       go to state 70
+    SELECTION_STATEMENT        go to state 71
+    ITERATION_STATEMENT        go to state 72
+    JUMP_STATEMENT             go to state 73
+    CONSTANT                   go to state 74
+
+
+State 211
+
+  114 SELECTION_STATEMENT: T_IF T_LBRACKET EXPRESSION T_RBRACKET STATEMENT T_ELSE STATEMENT .
+
+    $default  reduce using rule 114 (SELECTION_STATEMENT)
